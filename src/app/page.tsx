@@ -1,137 +1,121 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Folder,
-  File,
-  FileText,
-  Image,
-  Video,
-  Music,
-  Upload,
-  ChevronRight,
-} from "lucide-react";
+import { File, mockFiles } from "../lib/mock-data.ts";
+import { Folder, FileIcon, Upload, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { Button } from "../components/ui/button";
 
-type Item = {
-  id: string;
-  name: string;
-  type: "folder" | "file";
-  fileType?: "document" | "image" | "video" | "audio" | "other";
-  children?: Item[];
-};
+export default function GoogleDriveClone() {
+  const [currentFolder, setCurrentFolder] = useState<string | null>(null);
 
-const mockData: Item[] = [
-  {
-    id: "1",
-    name: "Documents",
-    type: "folder",
-    children: [
-      { id: "2", name: "Report.docx", type: "file", fileType: "document" },
-      {
-        id: "3",
-        name: "Presentation.pptx",
-        type: "file",
-        fileType: "document",
-      },
-    ],
-  },
-  {
-    id: "4",
-    name: "Images",
-    type: "folder",
-    children: [
-      { id: "5", name: "Vacation.jpg", type: "file", fileType: "image" },
-      { id: "6", name: "Family.png", type: "file", fileType: "image" },
-    ],
-  },
-  { id: "7", name: "Video.mp4", type: "file", fileType: "video" },
-  { id: "8", name: "Song.mp3", type: "file", fileType: "audio" },
-  { id: "9", name: "Archive.zip", type: "file", fileType: "other" },
-];
-
-export default function DriveClone() {
-  const [currentFolder, setCurrentFolder] = useState<Item[]>([
-    { id: "root", name: "My Drive", type: "folder" },
-  ]);
-  const [currentItems, setCurrentItems] = useState<Item[]>(mockData);
-
-  const navigateToFolder = (folder: Item) => {
-    setCurrentFolder([...currentFolder, folder]);
-    setCurrentItems(folder.children || []);
+  const getCurrentFiles = () => {
+    return mockFiles.filter((file) => file.parent === currentFolder);
   };
 
-  const navigateToBreadcrumb = (index: number) => {
-    const newPath = currentFolder.slice(0, index + 1);
-    setCurrentFolder(newPath);
-    if (index === 0) {
-      setCurrentItems(mockData);
-    } else {
-      const lastFolder = newPath[newPath.length - 1];
-      setCurrentItems(lastFolder.children || []);
-    }
+  const handleFolderClick = (folderId: string) => {
+    setCurrentFolder(folderId);
   };
 
-  const renderItem = (item: Item) => {
-    let Icon = File;
-    if (item.type === "folder") {
-      Icon = Folder;
-    } else {
-      switch (item.fileType) {
-        case "document":
-          Icon = FileText;
-          break;
-        case "image":
-          Icon = Image;
-          break;
-        case "video":
-          Icon = Video;
-          break;
-        case "audio":
-          Icon = Music;
-          break;
+  const getBreadcrumbs = () => {
+    const breadcrumbs = [];
+    let currentId = currentFolder;
+
+    while (currentId !== null) {
+      const folder = mockFiles.find((file) => file.id === currentId);
+      if (folder) {
+        breadcrumbs.unshift(folder);
+        currentId = folder.parent;
+      } else {
+        break;
       }
     }
 
-    return (
-      <Button
-        key={item.id}
-        variant="ghost"
-        className="mb-2 w-full justify-start"
-        onClick={() => item.type === "folder" && navigateToFolder(item)}
-      >
-        <Icon className="mr-2 h-5 w-5 text-gray-400" />
-        <span>{item.name}</span>
-      </Button>
-    );
+    return breadcrumbs;
+  };
+
+  const handleUpload = () => {
+    alert("Upload functionality would be implemented here");
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-4">
-      <div className="mb-4 flex items-center space-x-2">
-        {currentFolder.map((folder, index) => (
-          <div key={folder.id} className="flex items-center">
-            {index > 0 && (
-              <ChevronRight className="mx-1 h-4 w-4 text-muted-foreground" />
-            )}
+    <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center">
             <Button
-              variant="link"
-              onClick={() => navigateToBreadcrumb(index)}
-              className="h-auto p-0"
+              onClick={() => setCurrentFolder(null)}
+              variant="ghost"
+              className="mr-2 text-gray-300 hover:text-white"
             >
-              {folder.name}
+              My Drive
             </Button>
+            {getBreadcrumbs().map((folder, index) => (
+              <div key={folder.id} className="flex items-center">
+                <ChevronRight className="mx-2 text-gray-500" size={16} />
+                <Button
+                  onClick={() => handleFolderClick(folder.id)}
+                  variant="ghost"
+                  className="text-gray-300 hover:text-white"
+                >
+                  {folder.name}
+                </Button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="mb-4">
-        <Button>
-          <Upload className="mr-2 h-5 w-5" />
-          Upload
-        </Button>
-      </div>
-      <div className="overflow-hidden rounded-lg border p-4">
-        {currentItems.map(renderItem)}
+          <Button
+            onClick={handleUpload}
+            className="bg-blue-600 text-white hover:bg-blue-700"
+          >
+            <Upload className="mr-2" size={20} />
+            Upload
+          </Button>
+        </div>
+        <div className="rounded-lg bg-gray-800 shadow-xl">
+          <div className="border-b border-gray-700 px-6 py-4">
+            <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-400">
+              <div className="col-span-6">Name</div>
+              <div className="col-span-3">Type</div>
+              <div className="col-span-3">Size</div>
+            </div>
+          </div>
+          <ul>
+            {getCurrentFiles().map((file) => (
+              <li
+                key={file.id}
+                className="hover:bg-gray-750 border-b border-gray-700 px-6 py-4"
+              >
+                <div className="grid grid-cols-12 items-center gap-4">
+                  <div className="col-span-6 flex items-center">
+                    {file.type === "folder" ? (
+                      <button
+                        onClick={() => handleFolderClick(file.id)}
+                        className="flex items-center text-gray-100 hover:text-blue-400"
+                      >
+                        <Folder className="mr-3" size={20} />
+                        {file.name}
+                      </button>
+                    ) : (
+                      <Link
+                        href={file.url || "#"}
+                        className="flex items-center text-gray-100 hover:text-blue-400"
+                      >
+                        <FileIcon className="mr-3" size={20} />
+                        {file.name}
+                      </Link>
+                    )}
+                  </div>
+                  <div className="col-span-3 text-gray-400">
+                    {file.type === "folder" ? "Folder" : "File"}
+                  </div>
+                  <div className="col-span-3 text-gray-400">
+                    {file.type === "folder" ? "--" : "2 MB"}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
