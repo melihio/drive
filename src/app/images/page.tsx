@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronLeft, Folder, ImageIcon, Upload } from "lucide-react";
-import { Button } from "../../components/ui/button";
+import { Button } from "~/components/ui/button";
 
 type Item = {
   id: string;

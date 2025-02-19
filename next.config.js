@@ -1,3 +1,5 @@
+import path from "path";
+
 /**
  * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
  * for Docker builds.
@@ -12,6 +14,14 @@ const config = {
 
   typescript: {
     ignoreBuildErrors: true,
+  },
+
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "~": path.resolve(__dirname, "./src"),
+    };
+    return config;
   },
 };
 
