@@ -2,7 +2,7 @@ import { db } from "~/server/db";
 import { mockFolders, mockFiles } from "@/src/lib/mock-data";
 import { files_table, folders_table } from "@/src/server/db/schema";
 
-export default function SandboxPage() {
+export default async function SandboxPage() {
   return (
     <div className="flex flex-col gap-4">
       Seed Function{" "}
