@@ -9,7 +9,6 @@ export default async function SandboxPage() {
       <form
         action={async () => {
           "use server";
-
           console.log("sup nerds");
 
           const folderInsert = await db.insert(folders_table).values(
@@ -17,7 +16,7 @@ export default async function SandboxPage() {
               id: index + 1,
               ownerId: "asd",
               name: folder.name,
-              parent: index + 1,
+              parent: index !== 0 ? 1 : null,
               createdAt: new Date(),
             })),
           );
@@ -28,7 +27,7 @@ export default async function SandboxPage() {
               name: file.name,
               size: 50000,
               url: file.url,
-              parent: index + 1,
+              parent: (index % 3) + 1,
               createdAt: new Date(),
             })),
           );
