@@ -10,7 +10,8 @@
 
 ## 21.02.2024
 
-- [ ] Upload files to the right folder
+- [x] Add ownership to files and folders
+- [x] Upload files to the right folder
 - [ ] Delete files button
-- [ ] Allow files that aren't images to be uploaded
+- [x] Allow files that aren't images to be uploaded
 - [ ] Real HomePage
