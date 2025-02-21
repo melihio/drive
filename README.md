@@ -10,7 +10,7 @@
 
 ## 21.02.2024
 
-- [ ] Real HomePage
 - [ ] Upload files to the right folder
 - [ ] Delete files button
 - [ ] Allow files that aren't images to be uploaded
+- [ ] Real HomePage

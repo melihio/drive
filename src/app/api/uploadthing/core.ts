@@ -1,7 +1,8 @@
-import { MUTATIONS } from "@/src/server/db/queries";
+import { MUTATIONS, QUERIES } from "@/src/server/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
+import { z } from "zod";
 
 const f = createUploadthing();
 
@@ -18,12 +19,19 @@ export const ourFileRouter = {
       maxFileCount: 1,
     },
   })
-    .middleware(async () => {
+    .input(z.object({ folderId: z.number() }))
+    .middleware(async ({ input }) => {
       const user = await auth();
 
       if (!user.userId) throw new UploadThingError("Unauthorized");
 
-      return { userId: user.userId };
+      const folder = await QUERIES.getFolderById(input.folderId);
+
+      if (!folder) throw new UploadThingError("Folder not found");
+      if (folder.ownerId !== user.userId)
+        throw new UploadThingError("Unauthorized");
+
+      return { userId: user.userId, folderId: input.folderId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("Upload complete for userId:", metadata.userId);
@@ -31,11 +39,14 @@ export const ourFileRouter = {
       console.log("file url", file.ufsUrl);
 
       await MUTATIONS.createFile({
-        ownerId: metadata.userId,
-        name: file.name,
-        size: file.size,
-        url: file.ufsUrl,
-        parent: 1,
+        file: {
+          ownerId: metadata.userId,
+          name: file.name,
+          size: file.size,
+          url: file.ufsUrl,
+          parent: metadata.folderId,
+        },
+        userId: metadata.userId,
       });
 
       return { uploadedBy: metadata.userId };
