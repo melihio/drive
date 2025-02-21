@@ -11,5 +11,5 @@
 ## 21.02.2024
 
 - [x] Change folders to link components, remove all client state
-- [ ] Clean up the database and data fetching patterns
+- [x] Clean up the database and data fetching patterns
 - [ ] Real HomePage
