@@ -7,8 +7,8 @@ import { ClerkProvider } from "@clerk/nextjs";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Google Drive Clone",
-  description: "A basic Google Drive clone UI",
+  title: "Google Drive",
+  description: "It's like Google Drive, but worse",
 };
 
 export default function RootLayout({
