@@ -2,11 +2,11 @@
 
 import { ChevronRight } from "lucide-react";
 import { FileRow, FolderRow } from "./file-row";
-import type { files_table, folders_table } from "../server/db/schema";
+import type { files_table, folders_table } from "../../../server/db/schema";
 import Link from "next/link";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { UploadButton } from "@uploadthing/react";
-import { OurFileRouter } from "./api/uploadthing/core";
+import { OurFileRouter } from "../../api/uploadthing/core";
 import { useRouter } from "next/navigation";
 
 export default function DriveContents(props: {
