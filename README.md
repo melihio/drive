@@ -7,5 +7,5 @@
 - [x] Add auth
 - [x] Add file uploading
 - [x] Add analytics
-- [ ] Add delete
+- [x] Add delete
 - [ ] Real homepage + onboarding
