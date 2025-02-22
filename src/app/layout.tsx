@@ -8,7 +8,7 @@ import { PostHogProvider } from "./_providers/posthog-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Google Drive",
+  title: "M1 Drive",
   description: "It's like Google Drive, but worse",
 };
 
