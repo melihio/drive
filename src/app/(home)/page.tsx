@@ -1,5 +1,8 @@
 import { Button } from "~/components/ui/button";
 import { SignInButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+import { MUTATIONS } from "@/src/server/db/queries";
 
 export default function SignUpPage() {
   return (
@@ -13,14 +16,29 @@ export default function SignUpPage() {
             Secure, fast, and easy file storage for the modern web
           </p>
         </div>
-        <SignInButton forceRedirectUrl={"/drive"}>
-          <Button
-            className="w-full bg-white text-black hover:bg-zinc-200"
-            size="lg"
-          >
-            Get Started
-          </Button>
-        </SignInButton>
+        <form
+          action={async () => {
+            "use server";
+            const session = await auth();
+
+            if (!session.userId) {
+              return redirect("/sign-in");
+            }
+
+            const rootFolderId = await MUTATIONS.onboardUser(session.userId);
+
+            return redirect(`/f/${rootFolderId}`);
+          }}
+        >
+          <SignInButton forceRedirectUrl={"/drive"}>
+            <Button
+              className="w-full bg-white text-black hover:bg-zinc-200"
+              size="lg"
+            >
+              Get Started
+            </Button>
+          </SignInButton>
+        </form>
       </div>
       <div className="absolute bottom-8 text-sm text-zinc-500">
         © {new Date().getFullYear()} M1 Drive. All rights reserved.
