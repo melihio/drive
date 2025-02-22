@@ -1,12 +1,12 @@
-"import server-only";
+import "server-only";
 
-import { eq } from "drizzle-orm";
-import { db } from ".";
+import { db } from "~/server/db";
 import {
-  DB_FileType,
   files_table as filesSchema,
   folders_table as foldersSchema,
-} from "./schema";
+  type DB_FileType,
+} from "~/server/db/schema";
+import { eq, isNull, and } from "drizzle-orm";
 
 export const QUERIES = {
   getFolders: function (folderId: number) {
@@ -23,13 +23,6 @@ export const QUERIES = {
       .where(eq(filesSchema.parent, folderId))
       .orderBy(filesSchema.id);
   },
-  getFolderById: async function (folderId: number) {
-    const folder = await db
-      .select()
-      .from(foldersSchema)
-      .where(eq(foldersSchema.id, folderId));
-    return folder[0];
-  },
   getAllParentsForFolder: async function (folderId: number) {
     const parents = [];
     let currentId: number | null = folderId;
@@ -42,18 +35,33 @@ export const QUERIES = {
       if (!folder[0]) {
         throw new Error("Parent folder not found");
       }
-
       parents.unshift(folder[0]);
-      currentId = folder[0].parent;
+      currentId = folder[0]?.parent;
     }
     return parents;
+  },
+  getFolderById: async function (folderId: number) {
+    const folder = await db
+      .select()
+      .from(foldersSchema)
+      .where(eq(foldersSchema.id, folderId));
+    return folder[0];
+  },
+
+  getRootFolderForUser: async function (userId: string) {
+    const folder = await db
+      .select()
+      .from(foldersSchema)
+      .where(
+        and(eq(foldersSchema.ownerId, userId), isNull(foldersSchema.parent)),
+      );
+    return folder[0];
   },
 };
 
 export const MUTATIONS = {
   createFile: async function (input: {
     file: {
-      ownerId: string;
       name: string;
       size: number;
       url: string;
@@ -61,8 +69,42 @@ export const MUTATIONS = {
     };
     userId: string;
   }) {
-    return await db
-      .insert(filesSchema)
-      .values({ ...input.file, ownerId: input.userId });
+    return await db.insert(filesSchema).values({
+      ...input.file,
+      ownerId: input.userId,
+    });
+  },
+
+  onboardUser: async function (userId: string) {
+    const rootFolder = await db
+      .insert(foldersSchema)
+      .values({
+        name: "Root",
+        parent: null,
+        ownerId: userId,
+      })
+      .$returningId();
+
+    const rootFolderId = rootFolder[0]!.id;
+
+    await db.insert(foldersSchema).values([
+      {
+        name: "Trash",
+        parent: rootFolderId,
+        ownerId: userId,
+      },
+      {
+        name: "Shared",
+        parent: rootFolderId,
+        ownerId: userId,
+      },
+      {
+        name: "Documents",
+        parent: rootFolderId,
+        ownerId: userId,
+      },
+    ]);
+
+    return rootFolderId;
   },
 };
