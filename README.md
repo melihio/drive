@@ -13,7 +13,7 @@
 
 - [x] Add folder creation
 - [x] Add folder deletion (Make sure to make it recursive and delete all files and folders inside)
-- [ ] Fix the size views (show file sizes in KB/MB/GB format)
+- [x] Fix the size views (show file sizes in KB/MB/GB format)
 - [ ] Add search
 - [x] Show popup on delete
 - [x] Add file preview

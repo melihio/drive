@@ -4,6 +4,17 @@ import { FileIcon, Trash2Icon } from "lucide-react";
 import type { files_table } from "~/server/db/schema";
 import { useState } from "react";
 
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return "0 B";
+
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB", "TB"];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
+
 export function FileRow(props: { file: typeof files_table.$inferSelect }) {
   const { file } = props;
   const [showPreview, setShowPreview] = useState(false);
@@ -58,10 +69,10 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
           </button>
         </div>
         <div className="hidden w-1/6 text-sm text-gray-400 sm:block">
-          {"file"}
+          {file.name.split(".").pop()?.toLowerCase() || "file"}
         </div>
         <div className="hidden w-1/4 text-sm text-gray-400 sm:block">
-          {file.size}
+          {formatFileSize(file.size)}
         </div>
         <div className="flex w-[40px] justify-end text-gray-400">
           <Button
