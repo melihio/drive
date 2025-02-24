@@ -21,13 +21,11 @@ export default function SignUpPage() {
             "use server";
             const session = await auth();
 
-            if (!session.userId) {
-              return redirect("/sign-in");
+            if (session.userId) {
+              const rootFolderId = await MUTATIONS.onboardUser(session.userId);
+
+              return redirect(`/f/${rootFolderId}`);
             }
-
-            const rootFolderId = await MUTATIONS.onboardUser(session.userId);
-
-            return redirect(`/f/${rootFolderId}`);
           }}
         >
           <SignInButton forceRedirectUrl={"/drive"}>

@@ -1,13 +1,23 @@
 "use client";
 
-import { ChevronRight } from "lucide-react";
-import { FileRow, FolderRow } from "./file-row";
+import { ChevronRight, PlusIcon, Upload } from "lucide-react";
+import { FileRow } from "./file-row";
 import type { files_table, folders_table } from "../../../server/db/schema";
 import Link from "next/link";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { UploadButton } from "@uploadthing/react";
-import { OurFileRouter } from "../../api/uploadthing/core";
+import { UserButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { Button } from "@/src/components/ui/button";
+import { UploadButton } from "@/src/components/upload-thing";
+import { createFolder } from "@/src/server/actions";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/src/components/ui/dialog";
+import { Input } from "@/src/components/ui/input";
+import { FolderRow, FolderRow as NewFolderRow } from "./folder-row";
 
 export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
@@ -16,46 +26,102 @@ export default function DriveContents(props: {
   currentFolder: number;
 }) {
   const navigate = useRouter();
+  const { user } = useUser();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [folderName, setFolderName] = useState("");
+
+  const handleCreateFolder = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!folderName.trim()) return;
+
+    await createFolder({
+      folder: {
+        name: folderName.trim(),
+        parent: props.currentFolder,
+        ownerId: user!.id,
+      },
+    });
+    setIsDialogOpen(false);
+    setFolderName("");
+    navigate.refresh();
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8 text-gray-100">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link href={`/f/1`} className="mr-2 text-gray-300 hover:text-white">
-              My Drive
-            </Link>
-            {props.parents.map((folder) => (
-              <div key={folder.id} className="flex items-center">
-                <ChevronRight className="mx-2 text-gray-500" size={16} />
-                <Link
-                  href={`/f/${folder.id}`}
-                  className="text-gray-300 hover:text-white"
-                >
-                  {folder.name}
-                </Link>
-              </div>
-            ))}
-          </div>
-          <div>
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </div>
-        </div>
-        <div className="rounded-lg bg-gray-800 shadow-xl">
-          <div className="border-b border-gray-700 px-6 py-4">
-            <div className="grid grid-cols-12 gap-4 text-sm font-medium text-gray-400">
-              <div className="col-span-6">Name</div>
-              <div className="col-span-2">Type</div>
-              <div className="col-span-3">Size</div>
-              <div className="col-span-1"></div>
+    <div className="min-h-screen bg-gray-900 text-gray-100">
+      <div className="sticky top-0 z-20 border-b border-gray-700 bg-gray-800/80 backdrop-blur-sm">
+        <div className="mx-auto flex max-w-6xl items-center justify-between p-4">
+          <div className="flex min-w-0 items-center gap-2">
+            <div className="flex min-w-0 items-center gap-1 overflow-hidden">
+              <Link
+                href={`/f/${props.parents[0]?.id}`}
+                className="flex-shrink-0 text-gray-400 hover:text-white"
+              >
+                My Drive
+              </Link>
+              {props.parents.length > 1 && (
+                <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-600" />
+              )}
+              {props.parents.slice(1).map((parent, i, arr) => (
+                <div key={parent.id} className="flex items-center">
+                  <Link
+                    href={`/f/${parent.id}`}
+                    className="truncate text-gray-400 hover:text-white"
+                  >
+                    {parent.name}
+                  </Link>
+                  {i !== arr.length - 1 && (
+                    <ChevronRight className="h-4 w-4 flex-shrink-0 text-gray-600" />
+                  )}
+                </div>
+              ))}
             </div>
           </div>
-          <ul>
+          <div className="flex items-center gap-4">
+            <Button
+              className="h-9 w-9 bg-gray-700 hover:bg-gray-600"
+              variant="outline"
+              size="icon"
+              onClick={() => setIsDialogOpen(true)}
+            >
+              <PlusIcon size={18} />
+            </Button>
+            <UploadButton
+              className="h-9 w-9 bg-gray-700 hover:bg-gray-600 ut-button:h-9 ut-button:w-9 ut-button:border ut-button:!bg-transparent ut-button:active:scale-95 ut-allowed-content:hidden"
+              endpoint={"driveUploader"}
+              onClientUploadComplete={() => navigate.refresh()}
+              input={{ folderId: props.currentFolder }}
+              content={{
+                button: ({ isUploading }) => (
+                  <Upload
+                    size={18}
+                    className={isUploading ? "animate-bounce" : ""}
+                  />
+                ),
+              }}
+            />
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  avatarBox: "h-9 w-9",
+                },
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto max-w-6xl p-4">
+        <div className="rounded-lg bg-gray-800 shadow-xl">
+          <div className="border-b border-gray-700 px-6 py-4">
+            <div className="flex w-full flex-row items-center justify-between gap-4 text-sm font-medium text-gray-400">
+              <div className="w-1/2">Name</div>
+              <div className="hidden w-1/6 text-sm sm:block">Type</div>
+              <div className="hidden w-1/4 text-sm sm:block">Size</div>
+              <div className="w-1/12"></div>
+            </div>
+          </div>
+          <ul className="divide-y divide-gray-700">
             {props.folders.map((folder) => (
               <FolderRow key={folder.id} folder={folder} />
             ))}
@@ -64,12 +130,29 @@ export default function DriveContents(props: {
             ))}
           </ul>
         </div>
-        <UploadButton<OurFileRouter, "driveUploader">
-          endpoint={"driveUploader"}
-          onClientUploadComplete={() => navigate.refresh()}
-          input={{ folderId: props.currentFolder }}
-        />
       </div>
+
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="bg-gray-800 text-gray-100">
+          <DialogHeader>
+            <DialogTitle>Create New Folder</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleCreateFolder} className="space-y-4">
+            <Input
+              placeholder="Folder name"
+              value={folderName}
+              onChange={(e) => setFolderName(e.target.value)}
+              className="border-gray-600 bg-gray-700"
+              autoFocus
+            />
+            <div className="flex justify-end">
+              <Button type="submit" disabled={!folderName.trim()}>
+                Create
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

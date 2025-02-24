@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowImportingTsExtensions": true,
     "allowJs": true,
     "skipLibCheck": true,
@@ -21,11 +25,23 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"],
-      "~/*": ["./src/*"]  // Added this line for the "~" alias
+      "@/*": [
+        "./*"
+      ],
+      "~/*": [
+        "./src/*"
+      ] // Added this line for the "~" alias
     },
-    "baseUrl": "."  // Added this line to make path aliases work
+    "baseUrl": "." // Added this line to make path aliases work
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next/types/**/*.ts",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -60,6 +60,18 @@ export const QUERIES = {
 };
 
 export const MUTATIONS = {
+  createFolder: async function (input: {
+    folder: {
+      name: string;
+      ownerId: string;
+      parent: number;
+    };
+  }) {
+    return await db.insert(foldersSchema).values({
+      ...input.folder,
+      ownerId: input.folder.ownerId,
+    });
+  },
   createFile: async function (input: {
     file: {
       name: string;
