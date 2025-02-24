@@ -1,8 +1,7 @@
 import { Button } from "@/src/components/ui/button";
 import { deleteFile } from "@/src/server/actions";
-import { Folder as FolderIcon, FileIcon, Trash2Icon, Eye } from "lucide-react";
-import Link from "next/link";
-import type { folders_table, files_table } from "~/server/db/schema";
+import { FileIcon, Trash2Icon } from "lucide-react";
+import type { files_table } from "~/server/db/schema";
 import { useState } from "react";
 
 export function FileRow(props: { file: typeof files_table.$inferSelect }) {
@@ -26,7 +25,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
         <div className="h-[80vh] w-[80vw]">
           <Button
             variant="ghost"
-            className="absolute right-2 top-2"
+            className="absolute right-2 top-2 bg-gray-700"
             onClick={() => setShowPreview(false)}
           >
             Close

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, PlusIcon, Upload } from "lucide-react";
+import { ChevronRight, PlusIcon, Upload, X } from "lucide-react";
 import { FileRow } from "./file-row";
 import type { files_table, folders_table } from "../../../server/db/schema";
 import Link from "next/link";
@@ -17,7 +17,7 @@ import {
   DialogTitle,
 } from "@/src/components/ui/dialog";
 import { Input } from "@/src/components/ui/input";
-import { FolderRow, FolderRow as NewFolderRow } from "./folder-row";
+import { FolderRow } from "./folder-row";
 
 export default function DriveContents(props: {
   files: (typeof files_table.$inferSelect)[];
@@ -133,6 +133,13 @@ export default function DriveContents(props: {
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <Button
+          variant="ghost"
+          className="fixed right-2 top-2 bg-gray-700"
+          onClick={() => setIsDialogOpen(false)}
+        >
+          Close
+        </Button>
         <DialogContent className="bg-gray-800 text-gray-100">
           <DialogHeader>
             <DialogTitle>Create New Folder</DialogTitle>
