@@ -6,9 +6,9 @@ import type { files_table, folders_table } from "../../../server/db/schema";
 import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import { Button } from "@/src/components/ui/button";
-import { UploadButton } from "@/src/components/upload-thing";
-import { createFolder } from "@/src/server/actions";
+import { Button } from "~/components/ui/button";
+import { UploadButton } from "~/components/upload-thing";
+import { createFolder } from "~/server/actions";
 import { useState } from "react";
 import {
   Dialog,
