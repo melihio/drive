@@ -114,11 +114,11 @@ export default function DriveContents(props: {
       <div className="mx-auto max-w-6xl p-4">
         <div className="rounded-lg bg-gray-800 shadow-xl">
           <div className="border-b border-gray-700 px-6 py-4">
-            <div className="flex w-full flex-row items-center justify-between gap-4 text-sm font-medium text-gray-400">
+            <div className="flex w-full flex-row items-center gap-4 text-sm font-medium text-gray-400">
               <div className="w-1/2">Name</div>
-              <div className="hidden w-1/6 text-sm sm:block">Type</div>
-              <div className="hidden w-1/4 text-sm sm:block">Size</div>
-              <div className="w-1/12"></div>
+              <div className="hidden w-1/6 sm:block">Type</div>
+              <div className="hidden w-1/4 sm:block">Size</div>
+              <div className="w-[40px]"></div>
             </div>
           </div>
           <ul className="divide-y divide-gray-700">
