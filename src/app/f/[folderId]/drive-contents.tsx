@@ -83,17 +83,17 @@ export default function DriveContents(props: {
               size="icon"
               onClick={() => setIsDialogOpen(true)}
             >
-              <PlusIcon size={18} />
+              <PlusIcon />
             </Button>
             <UploadButton
-              className="h-9 w-9 bg-gray-700 hover:bg-gray-600 ut-button:h-9 ut-button:w-9 ut-button:border ut-button:!bg-transparent ut-button:active:scale-95 ut-allowed-content:hidden"
-              endpoint={"driveUploader"}
+              className="ut-button:h-9 ut-button:w-9 ut-button:rounded-md ut-button:border ut-button:bg-gray-700 ut-button:hover:bg-gray-600 ut-allowed-content:hidden"
+              endpoint="driveUploader"
               onClientUploadComplete={() => navigate.refresh()}
               input={{ folderId: props.currentFolder }}
               content={{
                 button: ({ isUploading }) => (
                   <Upload
-                    size={18}
+                    size={15}
                     className={isUploading ? "animate-bounce" : ""}
                   />
                 ),
