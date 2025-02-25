@@ -23,13 +23,19 @@ export const ourFileRouter = {
     .middleware(async ({ input }) => {
       const user = await auth();
 
-      if (!user.userId) throw new UploadThingError("Unauthorized");
+      if (!user.userId) {
+        throw new Error("Unauthorized: User not found");
+      }
 
       const folder = await QUERIES.getFolderById(input.folderId);
 
-      if (!folder) throw new UploadThingError("Folder not found");
-      if (folder.ownerId !== user.userId)
-        throw new UploadThingError("Unauthorized");
+      if (!folder) {
+        throw new Error("Folder not found");
+      }
+
+      if (folder.ownerId !== user.userId) {
+        throw new Error("Unauthorized: User does not own this folder");
+      }
 
       return { userId: user.userId, folderId: input.folderId };
     })

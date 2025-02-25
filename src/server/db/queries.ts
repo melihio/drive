@@ -96,7 +96,7 @@ export const MUTATIONS = {
       })
       .$returningId();
 
-    const rootFolderId = rootFolder[0]!.id;
+    const rootFolderId = rootFolder[0].id;
 
     await db.insert(foldersSchema).values([
       {
