@@ -1,6 +1,6 @@
 import { Button } from "@/src/components/ui/button";
 import { deleteFile } from "@/src/server/actions";
-import { FileIcon, Trash2Icon } from "lucide-react";
+import { FileIcon, Trash2Icon, X, Download } from "lucide-react";
 import type { files_table } from "~/server/db/schema";
 import { useState } from "react";
 
@@ -25,6 +25,23 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
     return extension;
   };
 
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(file.url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
   const renderPreview = () => {
     if (!showPreview) return null;
 
@@ -33,18 +50,30 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-        <div className="h-[80vh] w-[80vw]">
+        <div className="fixed right-4 top-4 flex gap-2">
           <Button
             variant="ghost"
-            className="absolute right-2 top-2 bg-gray-700"
+            size="icon"
+            className="rounded-full bg-black/50 p-2 text-white hover:bg-black/75"
+            onClick={handleDownload}
+          >
+            <Download className="h-6 w-6" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full bg-black/50 p-2 text-white hover:bg-black/75"
             onClick={() => setShowPreview(false)}
           >
-            Close
+            <X className="h-6 w-6" />
           </Button>
+        </div>
+        <div className="h-[80vh] w-[80vw]">
           <div className="flex h-full w-full items-center justify-center">
             {isImage ? (
               <img
                 src={file.url}
+                alt={file.name}
                 className="max-h-full max-w-full object-contain"
               />
             ) : (

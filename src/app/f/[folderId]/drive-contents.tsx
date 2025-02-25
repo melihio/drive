@@ -135,10 +135,11 @@ export default function DriveContents(props: {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <Button
           variant="ghost"
-          className="fixed right-2 top-2 bg-gray-700"
+          size="icon"
+          className="fixed right-2 top-2 rounded-full bg-black/50"
           onClick={() => setIsDialogOpen(false)}
         >
-          Close
+          <X className="h-6 w-6" />
         </Button>
         <DialogContent className="bg-gray-800 text-gray-100">
           <DialogHeader>
