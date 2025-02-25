@@ -34,19 +34,14 @@ export const ourFileRouter = {
       return { userId: user.userId, folderId: input.folderId };
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for userId:", metadata.userId);
-
-      console.log("file url", file.ufsUrl);
-
       await MUTATIONS.createFile({
         file: {
-          ownerId: metadata.userId,
           name: file.name,
           size: file.size,
           url: file.ufsUrl,
           parent: metadata.folderId,
+          ownerId: metadata.userId,
         },
-        userId: metadata.userId,
       });
 
       return { uploadedBy: metadata.userId };

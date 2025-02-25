@@ -78,12 +78,11 @@ export const MUTATIONS = {
       size: number;
       url: string;
       parent: number;
+      ownerId: string;
     };
-    userId: string;
   }) {
     return await db.insert(filesSchema).values({
       ...input.file,
-      ownerId: input.userId,
     });
   },
 
