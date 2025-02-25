@@ -117,7 +117,7 @@ export default function DriveContents(props: {
             <div className="flex w-full flex-row items-center gap-4 text-sm font-medium text-gray-400">
               <div className="w-1/2">Name</div>
               <div className="hidden w-1/6 sm:block">Type</div>
-              <div className="hidden w-1/4 sm:block">Size</div>
+              <div className="w-1/4">Size</div>
               <div className="w-[40px]"></div>
             </div>
           </div>

@@ -25,9 +25,7 @@ export function FolderRow(props: {
             <span className="truncate">{folder.name}</span>
           </Link>
         </div>
-        <div className="hidden w-1/6 text-sm text-gray-400 sm:block">
-          {"folder"}
-        </div>
+        <div className="hidden w-1/6 text-sm text-gray-400 sm:block"></div>
         <div className="hidden w-1/4 text-sm text-gray-400 sm:block">{"-"}</div>
         <div className="flex w-[40px] justify-end text-gray-400">
           <Button

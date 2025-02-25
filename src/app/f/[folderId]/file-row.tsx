@@ -71,7 +71,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
         <div className="hidden w-1/6 text-sm text-gray-400 sm:block">
           {file.name.split(".").pop()?.toLowerCase() || "file"}
         </div>
-        <div className="hidden w-1/4 text-sm text-gray-400 sm:block">
+        <div className="w-1/4 text-sm text-gray-400 sm:block">
           {formatFileSize(file.size)}
         </div>
         <div className="flex w-[40px] justify-end text-gray-400">
