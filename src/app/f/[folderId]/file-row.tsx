@@ -98,7 +98,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
           </button>
         </div>
         <div className="hidden w-1/6 text-sm text-gray-400 sm:block">
-          {file.name.split(".").pop()?.toLowerCase() || "file"}
+          {file.name.split(".").pop()?.toLowerCase() ?? "unknown"}
         </div>
         <div className="w-1/4 text-sm text-gray-400 sm:block">
           {formatFileSize(file.size)}
