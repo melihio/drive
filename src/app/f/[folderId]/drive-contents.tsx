@@ -16,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/src/components/ui/dialog";
-import { Input } from "@/src/components/ui/input";
 import { FolderRow } from "./folder-row";
 
 export default function DriveContents(props: {
@@ -146,11 +145,13 @@ export default function DriveContents(props: {
             <DialogTitle>Create New Folder</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleCreateFolder} className="space-y-4">
-            <Input
+            <input
               placeholder="Folder name"
-              value={folderName}
+              className={
+                "flex h-10 w-full rounded-md border border-gray-600 border-input bg-background bg-gray-700 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              }
               onChange={(e) => setFolderName(e.target.value)}
-              className="border-gray-600 bg-gray-700"
+              value={folderName}
               autoFocus
             />
             <div className="flex justify-end">

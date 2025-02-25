@@ -1,7 +1,6 @@
 import { MUTATIONS, QUERIES } from "@/src/server/db/queries";
 import { auth } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { z } from "zod";
 
 const f = createUploadthing();

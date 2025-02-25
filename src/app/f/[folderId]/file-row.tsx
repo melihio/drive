@@ -20,11 +20,6 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
   const [showPreview, setShowPreview] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const getFileType = (fileName: string) => {
-    const extension = fileName.split(".").pop()?.toLowerCase();
-    return extension;
-  };
-
   const handleDownload = async () => {
     try {
       const response = await fetch(file.url);
@@ -46,7 +41,7 @@ export function FileRow(props: { file: typeof files_table.$inferSelect }) {
     if (!showPreview) return null;
 
     const fileType = file.name.split(".").pop()?.toLowerCase();
-    const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileType || "");
+    const isImage = ["jpg", "jpeg", "png", "gif"].includes(fileType ?? "");
 
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
